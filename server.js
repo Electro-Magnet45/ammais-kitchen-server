@@ -35,18 +35,26 @@ server.post("/api/findItems/all", (req, res) => {
 
 server.post("/api/newItem", (req, res) => {
   const body = req.body;
-  if (body.apiKey !== process.env.API_KEY)
+  if (body.apiKey !== process.env.API_KEY) {
     res.status(500).send("Invalid API Key");
-
-  Food.create(
-    {
-      name: body.name,
-      description: body.description,
-      photo: body.photo,
-      status: body.status,
-    },
-    (err, data)
-  );
+  } else {
+    Food.create(
+      {
+        name: body.name,
+        description: body.description,
+        photo: body.photo,
+        serving: body.serving,
+        status: body.status,
+      },
+      (err, data) => {
+        if (err) {
+          res.status(500).send(err);
+        } else {
+          res.status(201).send(data);
+        }
+      }
+    );
+  }
 });
 
 server.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));
